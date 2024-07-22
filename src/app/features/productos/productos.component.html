@@ -1,0 +1,277 @@
+<div class="mt-3 container-fluid">
+    <h2 class="text-muted">Productos</h2>
+    <hr>
+    
+    <div class="position-fixed me-5 mb-5" style="bottom: 5rem; right: 7rem;">
+        <button (click)="crearProducto()" class="z-3 btn btn-lg bg-primary float-end position-absolute float-end rounded-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="3rem" fill="white" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="row">
+        <div class="form-check form-switch mb-1">
+            <input #jarabe class="form-check-input" (change)="adminJarabes(jarabe.checked)" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Mostrar Jarabes</label>
+        </div>
+
+      <div  [ngClass]="{'col-5': !((!!producto || nuevoProducto || ingrediente)), 'col-3': !!producto || nuevoProducto || ingrediente}">
+        @if(ingredientesProdutcto$ | async; as productos){
+            <app-typeahead [data]="productos"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+        }@else if(!error){
+            Cargando ...
+        }@else{
+            <label for="" class="">
+                {{error}} ...
+                <hr>
+            </label>
+        }
+    </div>
+      <div [ngClass]="{'col-7': !(!!producto || nuevoProducto || ingrediente), 'col-9': !!producto || nuevoProducto || ingrediente}">
+        
+    @if(ingrediente){
+            <div class="container-fluid" >
+                <div class="row g-0">
+                    <div class="col overflow-auto" style="height: 30vw;">    
+                        <table [formGroup]="form" class="table">
+                            <thead class="sticky-top table-secondary">
+                                <tr>
+                                    <th scope="col">Ingredientes Base</th>
+                                    <th scope="col">Unidades por producto</th>
+                                </tr>
+                            </thead>
+                            <tbody formArrayName="ingredientesBase">
+                                @for(ing of ingredientesBase.controls; track ing.value; let i = $index ){
+                                    <tr [formGroupName]="i">
+                                        <th scope="row" class="align-middle">
+                                            <span class="align-middle">
+                                                <button (click)="removerIngrediente(true, i)" type="button"  class="btn-close align-middle" aria-label="Close"></button>
+                                                {{ing.get('nombre')?.value}} {{ ing.get('topping')?.value ? ing.get('cantidadTopping')?.value: ''}}
+                                            </span>                                            
+                                        </th>                                        
+                                        <td>
+                                            <div class="input-group input-group-sm">
+                                                <input 
+                                                formControlName="cantidad"
+                                                type="number" 
+                                                class="form-control" 
+                                                aria-label="Sizing example input" 
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                placeholder="">
+                                                
+                                                <span class="input-group-text">{{ing.get('unidades')?.value}}</span>
+                                                
+                                                <div class="input-group-append">
+                                                    <button (click)="moverIngAgregables(ing.value, i)"  class="btn btn-sm btn-outline-secondary" aria-label="Right">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col overflow-auto" style="height: 30vw;">    
+                        <table [formGroup]="form" class="table">
+                            <thead class="sticky-top table-secondary">
+                                <tr>
+                                    <th scope="col">Ingredientes Agregables</th>
+                                    <th scope="col">Maximo No. Unidades</th>
+                                </tr>
+                            </thead>
+                            <tbody formArrayName="ingredientesAgregables">
+                                    @for(ing of ingredientesAgregables.controls; track ing.value; let i=$index){
+                                        <tr [formGroupName]="i">   
+                                            <th scope="row" class="align-middle">
+                                                <span class="align-middle">
+                                                    <button (click)="removerIngrediente(true, i)" type="button"  class="btn-close align-middle" aria-label="Close"></button>
+                                                    {{ing.get('nombre')?.value}}
+                                                </span>                                            
+                                            </th>
+                                            
+                                            <td>
+                                                <div class="input-group input-group-sm">
+                                                        <input 
+                                                        [class.is-invalid]="ing?.get('cantidad')?.touched && ing?.get('cantidad')?.invalid"        
+                                                        formControlName="cantidad"
+                                                        type="number" 
+                                                        class="form-control" 
+                                                        aria-label="Sizing example input" 
+                                                        aria-describedby="inputGroup-sizing-sm"
+                                                        placeholder="">
+                                                    <span class="input-group-text">{{ing.get('unidades')?.value}}</span>
+                                                    <span class="">
+                                                        <button (click)="moverIngBase(ing.value, i)" type="button" class="align-middle btn btn-sm btn-outline-secondary" aria-label="Left">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                                                            </svg>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                    </tr>
+                                    }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>     
+            
+            <hr class="w-75">
+            <button class="btn btn-secondary ms-2 mt-2" type="button" (click)="adminIngredientes(false)">
+                Administrar Productos
+            </button> 
+    }
+
+    <form [formGroup]="form">
+        @if((producto || nuevoProducto) && !ingrediente){
+
+        <app-form (formValue)="crear($event)" [form]="form" [soloLectura]="cargando">
+
+            
+            <ng-template #inputTpt  let-f="f">
+
+                    <app-form-input [control]="f['nombre']">
+                        
+                        <input
+                        formControlName="nombre"      
+                        id="nombre" 
+                        type="text"
+                        aria-label="nombre"
+                        class="form-control"
+                        [class.is-invalid]="f['nombre'].touched && f['nombre'].invalid"
+                        placeholder="Nombre"
+                        
+                        >
+                        <label for="nombre"> Nombre</label>
+                        
+                    </app-form-input>
+
+                
+            </ng-template>
+    
+            <ng-template #inputTpt  let-f="f">
+            
+                <div class="col">
+                    <app-form-input [control]="f['descuento']">
+
+                        <input 
+                        formControlName="descuento"
+                        id="descuento" 
+                        type="number" 
+                        class="form-control"
+                        [class.is-invalid]="f['descuento'].touched && f['descuento'].invalid"
+                        placeholder="descuento"
+                        >
+                        <label for="descuento">Descuento</label>
+                    </app-form-input>
+                </div>
+                <div class="col">
+                    <app-form-input [control]="f['precio']">
+                        <span class="input-group-text align-baseline">$</span>
+                        <input
+                        formControlName="precio"      
+                        id="precio" 
+                        aria-label="precio"
+                        type="number"
+                        class="form-control"
+                        [class.is-invalid]="f['precio'].touched && f['precio'].invalid"
+                        placeholder="Precio"
+                        
+                        >
+                        <label for="precio">Precio</label>
+                        
+                    </app-form-input>
+                </div>
+            </ng-template>
+        
+            <ng-template #inputTpt  let-f="f">
+            
+                    <div class="col">
+                        <app-form-input [control]="f['esJarabe']">
+                            <select
+                            formControlName="esJarabe"      
+                            id="esJarabe" 
+                            aria-label="esJarabe"
+                            class="form-control"
+                            [class.is-invalid]="f['esJarabe'].touched && f['esJarabe'].invalid"
+                            placeholder="esJarabe"
+                            
+                            >    
+                                <option [value]="true">{{"si" | uppercase}}</option>
+                                <option [value]="false">{{"no" | uppercase}}</option>
+                            </select>
+                            <label for="esJarabe">Es Jarabe ?</label>
+                        </app-form-input>
+                    </div>
+                    <div class="col">
+                        <app-form-input [control]="f['cantidadPorReceta']">
+                            <input
+                            formControlName="cantidadPorReceta"
+                            id="cantidadPorReceta" 
+                            type="text" 
+                            class="form-control"
+                            [class.is-invalid]="f['cantidadPorReceta'].touched && f['cantidadPorReceta'].invalid"
+                            placeholder="cantidadPorReceta"
+                            />
+                            <label for="cantidadPorReceta">Cantidad Por Receta</label>
+                        </app-form-input>
+                    </div>
+                
+            </ng-template>
+
+            <ng-template #inputTpt  let-f="f">
+            
+            
+                <app-form-input [control]="f['receta']">
+                    <textarea 
+                    formControlName="receta"
+                    id="receta" 
+                    type="text" 
+                    class="form-control"
+                    [class.is-invalid]="f['receta'].touched && f['receta'].invalid"
+                    placeholder="receta"
+                    style="height:20vh;"
+                    ></textarea>
+                    <label for="receta">Receta</label>
+                </app-form-input>
+
+            </ng-template>
+            
+
+                <span>{{nuevoProducto  ? 'Crear' : 'Actualizar'}}</span>
+                
+                <button class="btn btn-danger ms-2 mt-2" type="button" [disabled]="nuevoProducto" (click)="eliminar()">Eliminar</button> 
+                
+                <button class="btn btn-secondary ms-2 mt-2" type="button" (click)="adminIngredientes(true)">
+                    Administrar Ingredientes
+                </button> 
+                
+                
+        </app-form>
+        }
+    </form>
+
+    @if(message){  
+        <div [ngClass]="alertColor ? 'alert-success': 'alert-danger'" class="alert alert-dismissible d-flex align-items-center fade show" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            <span>
+                {{message}}
+            </span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+      </div>
+  </div>
+</div>

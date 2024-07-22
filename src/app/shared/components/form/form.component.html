@@ -1,0 +1,22 @@
+
+<div class="container-fluid">
+
+    <form (ngSubmit)="submit()">
+        
+
+        @for(section of sections; track section){
+                <div class="row g-1">
+                    <ng-template [ngTemplateOutlet]="section" [ngTemplateOutletContext]="{f:f}"></ng-template>    
+                </div>
+        }
+        
+        @if(!soloLectura ){
+
+            <button class="btn btn-success mt-2" [disabled]="form.invalid" type="submit">
+                <ng-content select="span"></ng-content>
+            </button> 
+            <ng-content select="btn"></ng-content>
+            <ng-content></ng-content>
+        }   
+    </form>
+</div>

@@ -1,0 +1,6 @@
+@media print {
+    app-navbar { 
+        display: none !important;
+        transition: none;
+    }  
+}

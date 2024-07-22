@@ -1,0 +1,20 @@
+
+
+@if(data){
+        <form [formGroup]="form">
+                <input type="text" class="form-control" placeholder="Buscar" formControlName="search" name="seacrh" id="search">
+        </form>
+
+        @if(search$ | async; as lista){
+                
+                <ul class="list-group list-group-flush overflow-auto" style="max-height:75vh;" >
+                        @for(elemento of lista;  let idx = $index; track elemento.id){
+                                <li class="list-group-item list-group-item-action" [class.active]="idx === indicieActivo" (click)="activarElemento(elemento, idx)">{{elemento[key]}}</li>
+                        }@empty {
+                                <li>
+                                     <p class="text-muted mt-2 ms-2">No se encontraron resultados ...</p> 
+                                </li>
+                        }
+                </ul>
+        }
+}

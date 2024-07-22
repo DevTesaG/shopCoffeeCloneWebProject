@@ -1,0 +1,235 @@
+<div class="mt-3 container-fluid">
+    <h2 class="text-muted">Combos</h2>
+    <hr>
+
+    <div class="position-fixed me-5 mb-4" style="bottom: 5rem; right: 7rem;">
+        <button (click)="nuevoCombo()" class="z-3 btn btn-lg bg-primary float-end position-absolute float-end rounded-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="3rem" fill="white" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+        </button>
+    </div>
+
+
+    <div #modal class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            @if(form.invalid){
+                <div class="mb-0 alert alert-danger alert-dismissible  align-items-center fade show" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                      </svg>
+                    <span>
+                        {{'Orden Invalida'}}
+                    </span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            }@else{
+                <div class="mb-0 alert alert-primary alert-dismissible  align-items-center fade show" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+                    </svg>
+                    <span>
+                        Desea crear este combo?
+                    </span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <hr class="mt-2">
+                    <button class="mb-0 float-end"  data-bs-dismiss="modal"  (click)="crear()" class="btn btn-success">Continuar</button>
+                </div>
+         
+            }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+      <div  class="col-3">
+        @if(productos$ | async; as productos;){
+            <app-typeahead [data]="productos"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+        }@else if(!error){
+            Cargando ...
+        }@else{
+            <label for="" class="">
+                {{error}} ...
+                <hr>
+            </label>
+        }
+    </div>
+      <div class="col-9">   
+        @if(producto || nuevo){     
+            <div class="container-fluid" >
+
+                @if(advertenciaFecha){
+                    <div class="mb-0 alert alert-danger alert-dismissible  align-items-center fade show" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                        </svg>
+                        <span>
+                            Advertencia: El periodo de este combo ya termino. Se recomienda su eliminación.
+                        </span>
+                    </div>
+                }
+
+                <form [formGroup] = "form" class="mb-2">
+                    <div class="row">
+                        <div class="col-4">
+                            <app-form-input [control]="form.get('nombre') ?? undefined">
+                            <input 
+                            formControlName="nombre"
+                            id="nombre" 
+                            type="text"
+                            class="form-control"
+                            [class.is-invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+                            placeholder="nombre"
+                            >
+                            <label for="nombre">Nombre</label>
+                            </app-form-input>                
+                        </div>
+                        <div class="col-4">
+
+                            <app-form-input [control]="form.get('fechaInicio') ?? undefined">
+                            <input 
+                            formControlName="fechaInicio"
+                            id="fechaInicio" 
+                            type="datetime-local"
+                            class="form-control"
+                            [class.is-invalid]="form.get('fechaInicio')?.touched && form.get('fechaInicio')?.invalid"
+                            placeholder="fechaInicio"
+                            >
+                            <label for="fechaInicio">Fecha Inicio</label>
+                            </app-form-input>                
+                        </div>
+
+                        <div class="col-4">
+
+                            <app-form-input [control]="form.get('fechaFin') ?? undefined">
+                                <input 
+                                formControlName="fechaFin"
+                                id="fechaFin" 
+                                type="datetime-local"
+                                class="form-control"
+                                [class.is-invalid]="form.get('fechaFin')?.touched && form.get('fechaFin')?.invalid"
+                                placeholder="fechaFin"
+                                >
+                                <label for="fechaFin">Fecha Termino</label>
+                            </app-form-input>                
+                        </div>
+                    </div>
+                
+                </form>
+
+                <div class="overflow-auto" style="height: 26vw; width: 100%;">    
+                    <table [formGroup]="form" class="table">
+                        <thead class="sticky-top table-secondary">
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">#</th>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Descuento</th>
+                                <th scope="col">SubTotal</th>
+                            </tr>
+                        </thead>
+                        <tbody  formArrayName="promocion" class="table-group-divider">
+                                @for(producto of promocion.controls; track producto.value; let i=$index){
+                                    <tr [formGroupName]="i" class="align-bottom">
+                                        <th>
+                                            <button (click)="removerProductoPromo(i)" type="button" class="btn-close align-middle" aria-label="Close"></button>
+                                        </th>
+                                        <th scope="row">
+                                                {{i + 1}}
+                                        </th>
+                                        <th>
+                                            <span class="text-muted">
+                                                {{producto.get('nombre')?.value}}
+                                            </span>
+                                        </th>
+                                        <td>
+                                    
+                                            <!-- <div class="input-group"> -->
+                                                <span class="input-group-text">{{producto.get('precio')?.value }}</span>
+                                                <!-- <span class="input-group-text">$</span>
+                                            </div> -->
+                                        </td>
+                                        <td>
+                                            <app-form-input [control]="producto?.get('descuento') ?? undefined">
+                                                <input 
+                                                formControlName="descuento"
+                                                [id]="'descuento' + i" 
+                                                type="number" 
+                                                class="form-control"
+                                                [class.is-invalid]="producto.get('descuento')?.touched && producto.get('descuento')?.invalid"
+                                                placeholder="descuento"
+                                                >
+                                                <label for="descuento">Descuento</label>
+                                                
+                                            </app-form-input>
+                                        </td>
+                                        <td>
+                                            <span class="input-group-text">{{producto.get('subTotal')?.value}}</span>
+                                        </td>
+                                    </tr>
+                                }
+                        </tbody>
+
+                        <tfoot class="table-group-divider sticky-bottom table-secondary overflow-hidden">
+                            <tr>
+                                <th colspan="5">
+                                    Total
+                                </th>
+                                <th>
+                                    <app-form-input [control]="form.get('precio') ?? undefined">
+                                        <span class="input-group-text">$</span>
+
+                                        <input 
+                                        formControlName="precio"
+                                        id="precio" 
+                                        type="number" 
+                                        class="form-control"
+                                        [class.is-invalid]="form.get('precio')?.touched && form.get('precio')?.invalid"
+                                        placeholder="precio"
+                                        >
+                                        <label for="precio">Total</label>
+                                        
+                                    </app-form-input>                
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            
+                    <button class="btn btn-outline-success mt-1 me-3" [disabled]="cargando" (click)="marcarFormTocado()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        {{nuevo ? "Crear" : "Actualizar"}}
+                    </button>
+                    
+                    @if(nuevo){
+                        <button class="btn btn-outline-secondary mt-1 me-3" [disabled]="cargando" (click)="adminCombos()">
+                            Administrar Combos
+                        </button>
+                    }@else {
+                        <button class="btn btn-outline-danger mt-1 me-3" [disabled]="cargando" (click)="eliminar()">
+                            Eliminar
+                        </button>    
+                    }
+                
+                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Launch static backdrop modal
+                </button> -->
+            </div> 
+        }
+
+        @if(message){
+            <div class="mb-0 alert alert-success alert-dismissible  align-items-center fade show" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+                <span>
+                    {{message}}
+                </span>
+            </div>
+        }
+      </div>
+  </div>
+</div>

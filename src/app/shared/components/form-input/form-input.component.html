@@ -1,0 +1,40 @@
+
+<div class="input-group mt-2">   
+    <ng-content  select="span"></ng-content>
+    <div class="form-floating">
+        <ng-content  select="input"></ng-content>
+        <ng-content  select="select"></ng-content>
+        <ng-content  select="textarea"></ng-content>
+        @if(control?.touched && control?.invalid){ 
+            <label for="name">
+                @if(control?.errors && control?.hasError('required')){
+                    Este campo es obligatorio
+                }@else if (control?.errors && control?.hasError('requiredTrue')) {
+                    Este campo debe estar seleccionado
+                }         
+                @else if (control?.errors && control?.hasError('pattern')) {
+                    No cumple el patrón requerido 
+                }         
+                @else if (control?.errors && control?.hasError('min')) {
+                    Limite Minimo de {{control?.errors!['min'].requiredLength}}
+                }         
+                @else if (control?.errors && control?.hasError('max')) {
+                    Limite Maximo de {{control?.errors!['max'].requiredLength}}
+                }         
+                @else if (control?.errors && control?.hasError('minlength')) {
+                    Minimo {{control?.errors!['minlength'].requiredLength}} carácteres
+                }         
+                @else if (control?.errors && control?.hasError('maxlength')) {
+                    Maximo {{control?.errors!['maxlength'].requiredLength}} carácteres
+                }         
+                @else if (control?.errors && control?.hasError('custom')) {
+                    {{control?.errors!['custom']}}
+                }         
+            </label>
+        }@else {
+            <ng-content select="label"></ng-content>
+        }
+    </div>
+    <ng-content  [select]="[spanend]"></ng-content>
+</div>
+    

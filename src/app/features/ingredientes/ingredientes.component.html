@@ -1,0 +1,182 @@
+
+<div class="mt-3 container-fluid">
+    <h2 class="text-muted">Ingredientes</h2>
+    <hr>
+
+    <div class="position-fixed me-5 mb-5" style="bottom: 5rem; right: 7rem;">
+        <button (click)="crearIngrediente()" class="btn btn-lg bg-primary float-end position-absolute float-end rounded-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="3rem" fill="white" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+        </button>
+    </div>
+
+
+    <div class="row">
+      <div class="col-5">
+
+        @if(Ingredientes$ | async; as ingredientes){
+            <app-typeahead [data]="ingredientes"  key="nombre" (elementoActivado)="ingredienteSeleccionado($event)"></app-typeahead>
+        }@else if(!error){
+            Cargando ...
+        }@else{
+            <label for="" class="">
+                {{error}} ...
+                <hr>
+            </label>
+        }
+        
+    </div>
+      <div class="col-7">
+        
+    @if(ingrediente || nuevoIngrediente){
+        <form [formGroup]="form">
+
+            <app-form (formValue)="crear($event)" [soloLectura]="cargando" [form]="form">
+
+
+                    <ng-template #inputTpt  let-f="f">
+                            <app-form-input [control]="f['nombre']">
+                                
+                                <input
+                                formControlName="nombre"      
+                                id="nombre" 
+                                type="text"
+                                aria-label="nombre"
+                                class="form-control"
+                                [class.is-invalid]="f['nombre'].touched && f['nombre'].invalid"
+                                placeholder="Nombre"
+                                
+                                >
+                                <label for="nombre"> Nombre</label>
+                                
+                            </app-form-input>                
+                    </ng-template>
+                    
+                    <ng-template #inputTpt  let-f="f">
+                            <div class="col">
+
+                                <app-form-input [control]="f['topping']">
+                                    
+                                    <select
+                                    formControlName="topping"      
+                                    id="topping" 
+                                    aria-label="topping"
+                                    class="form-control"
+                                    [class.is-invalid]="f['topping'].touched && f['topping'].invalid"
+                                    placeholder="topping"
+                                    
+                                    >    
+                                    <option [value]="true">{{"si" | uppercase}}</option>
+                                    <option [value]="false">{{"no" | uppercase}}</option>
+                                    </select>
+                                    <label for="topping"> Es Topping?</label>
+                                
+                                </app-form-input>                      
+                            </div>
+                    </ng-template>
+                
+                    <ng-template #inputTpt  let-f="f">
+                        <div class="col">
+                            <app-form-input [control]="f['unidadConsumo']">
+                                
+                                <select
+                                formControlName="unidadConsumo"      
+                                id="unidadConsumo" 
+                                aria-label="unidadConsumo"
+                                class="form-control"
+                                [class.is-invalid]="f['unidadConsumo'].touched && f['unidadConsumo'].invalid"
+                                placeholder="unidadConsumo"                            
+                                >
+                                    <option value="mililitros" selected>{{"mililitros" | uppercase}}</option>
+                                    <option value="gramos">{{"gramos" | uppercase}}</option>
+                                    <option value="centimetros">{{"centimetros" | uppercase}}</option>
+                                    <option value="piezas">{{"piezas" | uppercase}}</option>
+                                    
+                                </select>
+                                <label for="unidadConsumo"> Unidad de Consumo</label>
+                                
+                            </app-form-input>                
+                        </div>
+                        <div class="col">
+                            <app-form-input [control]="f['unidadInsumo']">
+                                <select
+                                formControlName="unidadInsumo"      
+                                id="unidadInsumo" 
+                                aria-label="unidadInsumo"
+                                class="form-control"
+                                [class.is-invalid]="f['unidadInsumo'].touched && f['unidadInsumo'].invalid"
+                                placeholder="unidadInsumo"
+                                
+                                >
+                                <option [value]="'litros'" selected>{{"litros" | uppercase}}</option>
+                                <option [value]="'metros cubicos'">{{"metros cubicos" | uppercase}}</option>
+                                <option [value]="'kilos'">{{"kilos" | uppercase}}</option>
+                                <option [value]="'toneladas'">{{"toneladas" | uppercase}}</option>
+                                <option [value]="'metros'">{{"metros" | uppercase}}</option>
+                                <option [value]="'piezas'">{{"piezas" | uppercase}}</option>
+                                </select>
+                                <label for="unidadInsumo"> Unidad de Insumo</label>
+                            </app-form-input>                
+                        </div>
+                    </ng-template>
+
+                    <ng-template #inputTpt  let-f="f">
+                        <div class="col">
+
+                            <app-form-input [control]="f['cantidadTopping']">
+                                
+                                <input
+                                formControlName="cantidadTopping"      
+                                id="cantidadTopping" 
+                                aria-label="cantidadTopping"
+                                class="form-control"
+                                [class.is-invalid]="f['cantidadTopping'].touched && f['cantidadTopping'].invalid"
+                                placeholder="cantidadTopping"                            
+                                />
+                                <label for="cantidadTopping"> Cantidad por Topping</label>
+                                
+                            </app-form-input>     
+                        </div>
+                        <div class="col">
+                            <app-form-input [control]="f['precioTopping']">   
+                                <input
+                                formControlName="precioTopping"      
+                                id="precioTopping" 
+                                aria-label="precioTopping"
+                                class="form-control"
+                                [class.is-invalid]="f['precioTopping'].touched && f['precioTopping'].invalid"
+                                placeholder="precioTopping"                            
+                                />
+                                <label for="precioTopping"> Precio Topping</label>
+                                
+                            </app-form-input>     
+                        </div>
+                    </ng-template>     
+                
+
+                <span>{{nuevoIngrediente  ? 'Crear' : 'Actualizar'}}</span>
+
+                <button class="btn btn-danger ms-2 mt-2" type="button" [disabled]="nuevoIngrediente" (click)="eliminar()">Eliminar</button> 
+       
+            </app-form>
+
+        </form>
+    }
+
+    @if(message){ 
+        <div [ngClass]="alertColor ===true ? 'alert-success': 'alert-danger'" class="alert alert-dismissible d-flex align-items-center fade show" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            <span>
+                {{message}}
+            </span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+      </div>
+  </div>
+</div>

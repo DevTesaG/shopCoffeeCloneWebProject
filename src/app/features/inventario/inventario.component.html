@@ -1,0 +1,76 @@
+
+<div class="mt-3 container-fluid">
+    
+    <div class="d-inline">
+        <h2 class="text-muted">Inventario</h2>
+        <!-- <a class="btn btn-outline-primary" title="JSON" [href]="jsonRef"  download="Tickets"   (click)="descargarCSV()">Descargar Tickets</a> -->
+    </div>
+    
+    <hr>
+    <div class="overflow-auto" style="height: 40vw; width: 100%;">    
+        <table class="table">
+            <thead class="sticky-top table-secondary">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Ingrediente</th>
+                    <th scope="col">En Inventario</th>
+                    <th scope="col">Min Permitible</th>
+                    <th scope="col">Min Resurtir</th>
+                    <th scope="col">Resurtir</th>
+                    <!-- <th scope="col">Eliminar</th> -->
+                </tr>
+            </thead>
+            <ng-container>
+                
+                <tbody class="table-group-divider">
+                    @for(producto of inventarios$|async; track producto.id; let i=$index){
+                    @if(producto){
+
+                        <tr>
+                            <th scope="row" class="align-middle">
+                                {{i + 1}}
+                            </th>
+                            <th class="align-middle">
+                            <span class="text-muted align-middle">
+                                {{producto.nombre}}
+                            </span>
+                        </th>
+                        <td>
+                            <div class="input-group input-group-sm align-middle">
+                                <span class="input-group-text">
+                                    {{producto.disponible}}
+                                </span>
+                                <span class="input-group-text">
+                                    {{producto.unidadConsumo}}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="text-muted align-middle">
+                                {{producto.minPermitible}}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-muted align-middle">
+                                {{producto.minResurtir}}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="h5 align-middle">
+                                {{producto.resurtir ? '❌': '✅' }}
+                            </span>
+                        </td>
+                        <!-- <td>
+                            <span class="h5 align-middle">
+                                <button class="btn btn-danger" (click)="eliminar(producto)">Eliminar</button>
+                            </span>
+                        </td> -->
+                    </tr>
+                }
+                }
+                </tbody>
+                
+            </ng-container>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,268 @@
+<div id="caja" class="mt-3 container-fluid">
+    <div class="d-flex justify-content-between">
+        <h2 class="text-muted">Caja</h2>
+        <button class="btn btn-outline-danger" (click)="terminarTurno()" [disabled]="inicioTurno">Terminar Turno</button>
+    </div>
+    <hr>
+
+    <div #modal class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            @if(form.invalid){
+                <div class="mb-0 alert alert-danger alert-dismissible  align-items-center fade show" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                      </svg>
+                    <span>
+                         {{'Orden Invalida'}} @if(authMessage){: {{authMessage}}}
+                    </span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="limpiarValidacionActualizarForm()" aria-label="Close"></button>
+                </div>
+            }@else if(authGerente){
+                
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Autorizacion de Descuentos - Gerente</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form [formGroup]="formGerente">
+                                <app-form-input [control]="formGerente.get('email') ?? undefined">
+                                    <input 
+                                    formControlName="email"
+                                    id="email" 
+                                    type="email"
+                                    class="form-control"
+                                    [class.is-invalid]="formGerente.get('email')?.touched && formGerente.get('email')?.invalid"
+                                    placeholder="email"
+                                    >
+                                    <label for="email">Correo</label>
+                                </app-form-input>      
+                                <app-form-input [control]="formGerente.get('contraseña') ?? undefined">
+                                    <input 
+                                    formControlName="contraseña"
+                                    id="contraseña" 
+                                    type="password"
+                                    class="form-control"
+                                    [class.is-invalid]="formGerente.get('contraseña')?.touched && formGerente.get('contraseña')?.invalid"
+                                    placeholder="contraseña"
+                                    >
+                                    <label for="contraseña">contraseña</label>
+                                </app-form-input>      
+                                
+                              </form>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Regresar</button>
+                            <button type="button" class="btn btn-primary" [disabled]="formGerente.invalid" (click)="autorizarDescuento()" >Continuar</button>
+                          </div>
+                    </div>
+                }@else {
+                <div class="mb-0 alert alert-primary alert-dismissible  align-items-center fade show" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+                    </svg>
+                    <span>
+                        @if(authMessage){ {{authMessage}}}: Desea continuar?
+                    </span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <hr class="mt-2">
+                    <button class="mb-0 float-end" [routerLink]="['../preparacion']"  data-bs-dismiss="modal"  (click)="crear()" class="btn btn-success">Continuar</button>
+                </div>
+         
+            }
+            </div>
+        </div>
+      </div>
+    <div #condonacion class="modal fade" id="condonacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Condonacion del Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form [formGroup]="formCondo">
+                
+                        
+                        <app-form-input [control]="form.get('condonacion') ?? undefined">
+                            <select 
+                            formControlName="condonacion"
+                            id="condonacion" 
+                            type="text"
+                            class="form-control"
+                            [class.is-invalid]="form.get('condonacion')?.touched && form.get('condonacion')?.invalid"
+                            placeholder="condonacion"
+                            >
+                                <option value="">NINGUNO</option>
+                                <option value="INFLUENCER">INFLUENCER</option>
+                                <option value="EMPLEADO">EMPLEADO</option>
+                            </select>
+                            <label for="condonacion">Condonacion</label>
+                        </app-form-input>      
+
+                        <app-form-input [control]="form.get('justificacion') ?? undefined">
+                            <textarea 
+                            formControlName="justificacion"
+                            id="justificacion" 
+                            type="text" 
+                            class="form-control"
+                            [class.is-invalid]="form.get('justificacion')?.touched && form.get('justificacion')?.invalid"
+                            placeholder="justificacion"
+                            style="height:20vh;"
+                            ></textarea>
+                            <label for="justificacion">Justificacion</label>
+                        </app-form-input>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Regresar</button>
+                    <button type="button" class="btn btn-primary" [disabled]="formCondo.invalid || productosEnCaja.length ==0" (click)="aplicarCondo()" data-bs-dismiss="modal">Save changes</button>
+                  </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+      <div  class="col-3">
+
+        <div class="form-check form-switch mb-1">
+            <input #combo class="form-check-input" (change)="adminCombos(combo.checked)" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Mostrar Combos</label>
+        </div>
+
+        @if(productos$ | async; as productos;){
+            <app-typeahead [data]="productos"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+        }@else if(!error){
+            Cargando ...
+        }@else{
+            <label for="" class="">
+                {{error}} ...
+                <hr>
+            </label>
+        }
+    </div>
+      <div class="col-9"> 
+        
+        @if(advertenciaFecha){
+            <div class="mx-3 my-2 alert alert-danger alert-dismissible  align-items-center fade show" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                </svg>
+                <span>
+                    Advertencia: El periodo de este combo ya termino.
+                </span>
+            </div>
+        }
+
+        @if (inicioTurno) {
+            <div class="container-fluid">
+                    <div class="mx-3 modal-dialog modal-dialog-centered" >
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Comienzo de Turno</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form [formGroup]="formInicioTurno">
+                                <app-form-input [control]="formInicioTurno.get('balanceInicial') ?? undefined">
+                                    <input 
+                                        formControlName="balanceInicial"
+                                        id="balanceInicial" 
+                                        type="number"
+                                        class="form-control"
+                                        [class.is-invalid]="formInicioTurno.get('balanceInicial')?.touched && formInicioTurno.get('balanceInicial')?.invalid"
+                                        placeholder="balanceInicial"
+                                        >
+                                    <label for="balanceInicial">Saldo Inicial</label>
+                                </app-form-input>
+                            </form>
+                        </div>
+                        <div class="modal-footer mt-2">
+                          <button type="button" class="btn btn-primary" (click)="comenzarTurno()" [disabled]="formInicioTurno.invalid">Comenzar</button>
+                        </div>
+                      </div>
+                    </div>
+            </div>
+        }@else {
+            
+        <div class="container-fluid" >
+            <div class="overflow-auto" style="height: 35vw; width: 100%;">    
+                <table [formGroup]="form" class="table">
+                    <thead class="sticky-top table-secondary">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">#</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Descuento</th>
+                            <th scope="col">SubTotal</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="descuentos"  class="table-group-divider">
+                            @for(promo of descuentos.controls; track promo.value;  let i=$index){
+                                <tr [formGroupName]="i" class="align-middle">
+                                    <th class="align-middle">
+                                        <button style="width: 10%;" (click)="removerProducto(i)" type="button" class="btn-close align-middle" aria-label="Close"></button>
+                                    </th>
+                                    <th scope="row" class="align-middle">
+                                            {{i + 1}}
+                                    </th>
+                                    <th class="align-middle">
+                                            <span class="input-group-text muted">
+                                                {{promo.get('nombre')?.value }}
+                                            </span>
+                                    </th>
+                                    <td>
+                                        <span class="input-group-text">{{promo.get('precio')?.value | currency: 'MXN':'symbol-narrow':'2.2-2' }}</span>
+                                    </td>
+                                    <td>
+                                        <app-form-input [control]="promo.get('descuento') ?? undefined">
+                                            <input 
+                                            formControlName="descuento"
+                                            [id]="'descuento'+ i" 
+                                            type="number" 
+                                            class="form-control"
+                                            [class.is-invalid]="promo.get('descuento')?.touched && promo.get('descuento')?.invalid"
+                                            placeholder="descuento"
+                                            >
+                                            <label for="descuento">Descuento</label>
+                                            <!-- <p class="spanend">%</p> -->
+                                        </app-form-input>
+                                    </td>
+                                    <td>
+                                        <span class="input-group-text">{{promo.get('subTotal')?.value | currency: 'MXN':'symbol-narrow':'2.2-2'}}</span>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                    <tfoot class="table-group-divider sticky-bottom table-secondary overflow-hidden">
+                        <tr>
+                            <th colspan="5">
+                                Total
+                            </th>
+                            <th>
+                                {{ (total?.value) | currency: 'MXN':'symbol-narrow':'3.2-2'}}                            
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <button class="btn  btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#condonacion" [disabled]="esCombo || contadorCombosEnCaja > 0" > Condonar</button>
+            <!-- <button class="btn  btn-success mt-3 ms-2" data-bs-toggle="modal" data-bs-target="#condonacion"  > Limpiar</button> -->
+            <button class="btn btn-outline-success float-end mt-3 me-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+            </button>
+            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Launch static backdrop modal
+            </button> -->
+        </div>    
+        } 
+      </div>
+  </div>
+</div>
+
+<app-imprimir OrdenId="Corte de Caja" [EstadoCaja]="estadoCaja"></app-imprimir>

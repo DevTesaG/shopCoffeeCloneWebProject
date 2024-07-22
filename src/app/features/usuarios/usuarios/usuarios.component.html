@@ -1,0 +1,137 @@
+
+<div class="mt-3 container-fluid">
+    <h2 class="text-muted">Usuarios</h2>
+    <hr>
+
+    <div class="position-fixed me-5 mb-5" style="bottom: 5rem; right: 7rem;">
+        <button (click)="crearUsuario()" class="btn btn-lg bg-primary float-end position-absolute float-end rounded-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="3rem" fill="white" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+        </button>
+    </div>
+
+
+    <div class="row">
+      <div class="col-5">
+
+        @if(usuarios$ | async; as usuarios){
+            <app-typeahead [data]="usuarios"  key="nombre" (elementoActivado)="usuarioSeleccionado($event)"></app-typeahead>
+        }@else if(!error){
+            Cargando ...
+        }@else{
+            <label for="" class="">
+                {{error}} ...
+                <hr>
+            </label>
+        }
+        
+    </div>
+      <div class="col-7">
+        
+    @if(usuario?.rol || nuevoUsuario){
+        <form [formGroup]="form">
+
+            <app-form (formValue)="crear($event)" [soloLectura]="cargando"  [form]="form">
+
+                
+                <ng-template #inputTpt  let-f="f">     
+                    <div class="row">
+                        <div class="col">
+                            <app-form-input [control]="f['nombre']">
+                                
+                                <input
+                                formControlName="nombre"      
+                                id="nombre" 
+                                type="text"
+                                aria-label="nombre"
+                                class="form-control"
+                                [class.is-invalid]="f['nombre'].touched && f['nombre'].invalid"
+                                placeholder="Nombre"
+                                
+                                >
+                                <label for="nombre"> Nombre</label>
+                                
+                            </app-form-input>
+                        </div>
+                        <div class="col">
+                            <app-form-input [control]="f['rol']">
+                                
+                                <select
+                                formControlName="rol"      
+                                id="rol" 
+                                aria-label="rol"
+                                type="text"
+                                class="form-control"
+                                [class.is-invalid]="f['rol'].touched && f['rol'].invalid"
+                                placeholder="Rol"
+                                
+                                >
+                                    <option [value]="'ADMIN'" [disabled]="!(isAdmin$ | async)">ADMIN</option>
+                                    <option [value]="'GERENTE'" [disabled]="!(isAdmin$ | async)">GERENTE</option>
+                                    <option [value]="'CAJERO'" selected>CAJERO</option>
+                                    <option [value]="'BARISTA'">BARISTA</option>
+                                </select>
+                                <label for="rol">ROL</label>
+                            </app-form-input>
+                        </div>
+                    </div>
+                </ng-template>
+        
+                <ng-template #inputTpt  let-f="f">
+                
+                    <app-form-input [control]="f['email']">
+
+                        <input 
+                        formControlName="email"
+                        id="email" 
+                        type="text" 
+                        class="form-control"
+                        [class.is-invalid]="f['email'].touched && f['email'].invalid"
+                        placeholder="Email"
+                        >
+                        <label for="email">Email</label>
+                    </app-form-input>
+
+                </ng-template>
+                <ng-template #inputTpt  let-f="f">
+                
+                    <app-form-input [control]="f['contraseña']">
+
+                        <input 
+                        formControlName="contraseña"
+                        id="contraseña" 
+                        type="password" 
+                        class="form-control"
+                        [class.is-invalid]="f['contraseña'].touched && f['contraseña'].invalid"
+                        placeholder="contraseña"
+                        >
+                        <label for="contraseña">Contraseña</label>
+                    </app-form-input>
+
+                </ng-template>
+                
+                
+                <span>{{nuevoUsuario  ? 'Crear' : 'Actualizar'}}</span>
+
+                <button class="btn btn-danger ms-2 mt-2" type="button" [disabled]="nuevoUsuario" (click)="eliminar()">Eliminar</button> 
+       
+            </app-form>
+        </form>
+    }
+
+    @if(message){  
+        <div class="alert alert-success alert-dismissible d-flex align-items-center fade show" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            <span>
+                {{message}}
+            </span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+      </div>
+  </div>
+</div>

@@ -1,0 +1,157 @@
+<div id="ingredientes" class="mt-3 container-fluid">
+    <h2 class="text-muted">Caja (Preparado)</h2>
+    
+    <hr>
+
+    <div #modal class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            @if(form.invalid){
+                <div class="mb-0 alert alert-danger alert-dismissible  align-items-center fade show" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                      </svg>
+                    <span>
+                        {{'Orden Invalida'}}
+                    </span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            }@else{
+                <div class="mb-0 alert alert-primary alert-dismissible  align-items-center fade show" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+                    </svg>
+                    <span>
+                        {{'Desea continuar?'}}
+                    </span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <hr class="mt-2">
+                    <button class="mb-0 float-end" [routerLink]="['../preparacion']"  data-bs-dismiss="modal"  (click)="crearOrden()" class="btn btn-success">Continuar</button>
+                </div>
+         
+            }
+            </div>
+        </div>
+      </div>
+
+
+    <div class="row">
+      <div  class="col-3">
+        <div class="form-check form-switch mb-1">
+            <input #topping class="form-check-input" (change)="adminTopping(topping.checked)" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Mostrar Toppings</label>
+        </div>
+
+        @if(productosEnCaja && productosEnCaja.length !==0){
+            <app-typeahead [data]="productosEnCaja"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+        }@else{
+            <label for="" class="">
+                Error Inesperado. Intente Regresar a caja y volver aqui...
+            </label>
+        }
+    </div>
+      <div [ngClass]="{'col-9': !esTopping, 'col-7': esTopping}">        
+        <div class="container-fluid" >
+        
+
+            <div class="overflow-auto" style="height: 35vw; width: 100%;">    
+                <table [formGroup]="form" class="table">
+                    <thead class="sticky-top table-secondary">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Ingrediente</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Max</th>
+                            <th scope="col">Unidades</th>
+                            <th scope="col">Costo</th>
+                        </tr>
+                    </thead>
+                        
+                        <tbody class="table-group-divider">
+                            @for(producto of ingredientesAgregablesProductos.at(indiceProductoSeleccionado)?.controls; track producto.value; let i=$index){
+                        
+                            <tr>
+                                <th class="align-middle">
+                                    <button style="width: 10%;"  [disabled]="producto.get('costo')?.value == 0" (click)="removerTopping(i)" type="button" class="btn-close align-middle" aria-label="Close"></button>
+                                </th>
+                                <th class="align-middle">
+                                    <span class="text-muted">
+                                        {{producto.get('nombre')?.value}}
+                                    </span>
+                                </th>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <input 
+                                        [class.is-invalid]="producto.get('cantidad')?.touched && producto.get('cantidad')?.invalid" 
+                                        type="number" 
+                                        [formControl] = "producto.get('cantidad')"
+                                        class="form-control" 
+                                        aria-label="Small" 
+                                        aria-describedby="cantidad ingrediente">            
+                                        <label for=""></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text">/</span>    
+                                        <span class="input-group-text">{{producto.get('max')?.value}}</span>    
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">{{producto.get('unidades')?.value}} - {{producto.get('topping')?.value ? ('( '+ producto.get('cantidadTopping')?.value + ' ' + producto.get('unidades') + ')' ): ''}}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">{{producto.get('costo')?.value | currency: 'MXN':'symbol-narrow':'2.2-2'}}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                        <tfoot class="table-group-divider sticky-bottom table-secondary overflow-hidden">
+                            <tr>
+                                <th colspan="5">
+                                    Total
+                                </th>
+                                <th>
+                                    {{ (ordenTotal) | currency: 'MXN':'symbol-narrow':'3.2-2'}}                            
+                                </th>
+                            </tr>
+                        </tfoot>                        
+
+                </table>
+            </div>
+         
+            <button class="btn btn-outline-success float-end mt-3 me-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+            </button>
+        </div>     
+      </div>
+
+        @if(esTopping){
+
+          <div class="col-2">
+                @if(toppings && toppings.length !==0){
+                    <app-typeahead [data]="toppings"  key="nombre" (elementoActivado)="toppingSeleccionado($event)"></app-typeahead>
+                }@else if(toppings.length == 0){
+                    <label for="" class="">
+                        No hay toppings registrados ...
+                    </label>                    
+                }@else {
+                    <label for="" class="">
+                        Error Inesperado. Intente Regresar a caja y volver aqui...
+                    </label>
+                }
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<app-imprimir [OrdenId]="ordenId"></app-imprimir>

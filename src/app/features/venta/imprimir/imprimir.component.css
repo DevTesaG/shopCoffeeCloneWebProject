@@ -1,0 +1,21 @@
+
+@media screen {
+    .print{
+        display: none;
+    }
+}
+
+@media print {
+    .print{
+        display: block;
+    }
+    button{
+        display: none;
+    }
+    tr {
+        page-break-inside:auto;
+    }
+    app-form-input{
+        page-break-inside:auto;
+    }
+}

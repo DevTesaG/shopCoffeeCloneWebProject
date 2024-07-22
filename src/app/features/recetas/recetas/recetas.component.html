@@ -1,0 +1,45 @@
+<div class="mt-3 container-fluid">
+    <h2 class="text-muted">Recetas</h2>
+    <hr>
+
+    <div class="row">
+      <div  class='col-3'>
+        @if(ingredientesProdutcto$ | async; as productos){
+            <app-typeahead [data]="productos"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+        }@else if(!error){
+            Cargando ...
+        }@else{
+            <label for="" class="">
+                {{error}} ...
+                <hr>
+            </label>
+        }
+    </div>
+      <div class='col-9'>
+
+          @if(producto){
+    
+    <form [formGroup]="form">
+        <app-form [form]="form" [soloLectura]="true" >
+            <ng-template #inputTpt  let-f="f">            
+                <app-form-input [control]="f['receta']">
+                    <textarea 
+                    formControlName="receta"
+                    id="receta" 
+                    type="text" 
+                    class="form-control"
+                    [class.is-invalid]="f['receta'].touched && f['receta'].invalid"
+                    placeholder="receta"
+                    style="height:20vh;"
+                    ></textarea>
+                    <label for="receta">Receta</label>
+                </app-form-input>
+            </ng-template>
+                    
+        </app-form>
+    </form>
+        }
+
+      </div>
+  </div>
+</div>
