@@ -41,8 +41,8 @@ export class AuthService {
   sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !(!!v))); 
   uid$:Observable<any> = this.currentUser$.pipe(map(v => v?.id)); 
   franquicia$:Observable<any> = this.currentUser$.pipe(map(v => v?.franquiciaId )); 
-  esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => !(!!(v) && v.rol == 'ADMIN'))); 
-  // esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'ADMIN'))); 
+  // esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => !(!!(v) && v.rol == 'ADMIN'))); 
+  esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'ADMIN'))); 
   esCajero$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'CAJERO'))); 
   esGerente$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'GERENTE'))); 
   esBarista$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'BARISTA'))); 

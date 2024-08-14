@@ -29,7 +29,7 @@ export const appConfig: ApplicationConfig = {
     }),
     importProvidersFrom([
       provideFirebaseApp(() => initializeApp(firebaseConfig, "primaria")),
-      // provideFirestore(() =>initializeFirestore(getApp(), {localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})})
+      // provideFirestore(() =>initializeFirestore(getApp("primaria"), {localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})})
       provideFirestore(() =>initializeFirestore(getApp("primaria"), {})
       ), 
       provideAuth(() => getAuth(getApp('primaria')))  ,
