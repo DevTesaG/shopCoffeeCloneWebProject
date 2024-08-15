@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, mergeAll, mergeMap, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, concatMap, mergeAll, mergeMap, switchMap, tap } from 'rxjs';
 import { CrudService } from '../../core/services/crud.service';
 import { Franquicia } from '../../models/usuario/franquicia.model';
 import { IngredienteService } from '../ingredientes/ingrediente.service';
@@ -20,7 +20,7 @@ export class FranquiciasService {
   }
 
   
-  crearfranquicia(franquicia: Franquicia): Observable<string>{
+  crearfranquicia(franquicia: Franquicia): Observable<any>{
     var fId:string
     return this.crud.crear<Franquicia>(franquicia).pipe(tap({next: (nuevoId)=>{
       const franquicias = this.franquiciasSub$?.value ?? []
@@ -30,9 +30,7 @@ export class FranquiciasService {
       this.franquiciasSub$?.next(franquicias)
     }}),
       tap(_fId => fId = _fId),
-      switchMap(()=> this.ingredientes.obtenerIngredientes()),
-      mergeAll(),
-      mergeMap(ing => this.inventarios.crearInventario(ing.id ?? '')),
+      switchMap(()=> this.inventarios.inventariosJoinIngredientes$)
     )
   }  
 
@@ -57,7 +55,12 @@ export class FranquiciasService {
   }
 
   eliminarfranquicia(id:string){
-    return this.crud.eliminar<Franquicia>(id).pipe(tap({next: ()=>{
+    this.inventarios.setFranquiciaId = id
+    return this.crud.eliminar<Franquicia>(id).pipe(
+      switchMap(()=> this.inventarios.obtenerInventario()),
+      mergeAll(),
+      mergeMap(inv => this.inventarios.eliminarInventario(inv.id ?? '')),       
+      tap({next: ()=>{
       var franquicias = this.franquiciasSub$.getValue()
       const idx = franquicias.findIndex(u=> u.id === id)
       franquicias.splice(idx, 1)
