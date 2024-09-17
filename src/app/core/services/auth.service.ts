@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FirebaseApp } from '@angular/fire/app';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, concatMap,filter,from, map, merge, of, shareReplay,switchMap,take,tap } from 'rxjs';
+import { BehaviorSubject, Observable,filter,from, map, merge, of, shareReplay,switchMap,take,tap } from 'rxjs';
 import {  onAuthStateChanged, signInWithPopup, GoogleAuthProvider, getAuth,Auth, signOut, User } from "@angular/fire/auth";
 import { inMemoryPersistence, setPersistence} from "firebase/auth";
 import { UsuariosService } from '../../api/usuario/usuarios.service';
@@ -37,8 +37,8 @@ export class AuthService {
   private currentUser?:Usuario = undefined;
   private userChanged:User = {} as User;
   private intentoInicioSesion = false
-  // sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !!v)); 
-  sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !(!!v))); 
+  sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !!v)); 
+  // sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !(!!v))); 
   uid$:Observable<any> = this.currentUser$.pipe(map(v => v?.id)); 
   franquicia$:Observable<any> = this.currentUser$.pipe(map(v => v?.franquiciaId )); 
   // esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => !(!!(v) && v.rol == 'ADMIN'))); 

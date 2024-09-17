@@ -146,10 +146,12 @@
 
                 <button class="btn btn-danger mx-2 mt-2" type="button" [disabled]="nuevafranquicia" (click)="eliminar()">Eliminar</button>
                 
-                <button class="d-inblock btn btn-primary mt-2" type="button" [disabled]="nuevafranquicia" [routerLink]="['/franquicias',franquicia?.id]">Administrar</button> 
+                <button class="d-inblock btn btn-primary mt-2 me-2" type="button" [disabled]="nuevafranquicia" [routerLink]="['/franquicias',franquicia?.id]">Administrar</button> 
+                
+                <button class="d-inblock btn btn-secondary mt-2" type="button" [disabled]="nuevafranquicia" [routerLink]="['/franquicias',franquicia?.nombre, 'surtir']">Surtir</button> 
 
             </app-form>
-        </form>
+        </form>x
         
     }
 

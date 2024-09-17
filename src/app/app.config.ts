@@ -9,14 +9,14 @@ import { CrudService } from './core/services/crud.service';
 import {provideHttpClient } from '@angular/common/http';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCFTgjTqfk5xl0IxynyJG423zR38vephzA",
-  authDomain: "shopcafe-a72f8.firebaseapp.com",
-  projectId: "shopcafe-a72f8",
-  storageBucket: "shopcafe-a72f8.appspot.com",
-  messagingSenderId: "12019644909",
-  appId: "1:12019644909:web:faf367513789256a1e0fe4",
-  measurementId: "G-NT4VNH2TRS",
+  apiKey: "AIzaSyDCyZIHdlBrxc7_7ZPgIYRz_U45y_Q1rDc",
+  authDomain: "shopcaferesp.firebaseapp.com",
+  projectId: "shopcaferesp",
+  storageBucket: "shopcaferesp.appspot.com",
+  messagingSenderId: "871789942990",
+  appId: "1:871789942990:web:4030dad53a0d85c94e989f"
 };
+
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { CrudService } from '../../core/services/crud.service';
 import { BehaviorSubject, Observable,catchError,from,map,of,switchMap,take,tap, throwError } from 'rxjs';
 import { Usuario } from '../../models/usuario/usuario.model';
-import { FirebaseApp } from '@angular/fire/app/firebase';
 import { initializeApp } from '@firebase/app';
 import { getAuth, UserCredential } from '@angular/fire/auth';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
@@ -16,14 +15,14 @@ export class UsuariosService {
 
   private usuariosSub$:BehaviorSubject<Usuario[]> = new BehaviorSubject([new Usuario])
   private firebaseConfig = {
-    apiKey: "AIzaSyCFTgjTqfk5xl0IxynyJG423zR38vephzA",
-    authDomain: "shopcafe-a72f8.firebaseapp.com",
-    projectId: "shopcafe-a72f8",
-    storageBucket: "shopcafe-a72f8.appspot.com",
-    messagingSenderId: "12019644909",
-    appId: "1:12019644909:web:faf367513789256a1e0fe4",
-    measurementId: "G-NT4VNH2TRS",
+    apiKey: "AIzaSyDCyZIHdlBrxc7_7ZPgIYRz_U45y_Q1rDc",
+    authDomain: "shopcaferesp.firebaseapp.com",
+    projectId: "shopcaferesp",
+    storageBucket: "shopcaferesp.appspot.com",
+    messagingSenderId: "871789942990",
+    appId: "1:871789942990:web:4030dad53a0d85c94e989f"
   };
+  
 
   usuarios$:Observable<Usuario[]> = this.usuariosSub$?.asObservable()
   ruta:string = 'usuario'

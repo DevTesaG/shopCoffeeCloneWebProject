@@ -24,8 +24,12 @@ export class InventarioService {
     this.franquiciaId = franquiciaId
   }
 
-  setRuta(){
-    this.crud.setRuta(this.ruta, this.franquiciaId)
+  setRuta(almacen?:boolean){
+    if(!almacen){
+      this.crud.setRuta(this.ruta, this.franquiciaId)
+    }else{
+      this.crud.setRuta(this.ruta)
+    }
   }
 
   get inventariosJoinIngredientes$(){
@@ -81,7 +85,6 @@ export class InventarioService {
     var inventario: IngredienteInv = { 
       minResurtir: 10*2,
       minPermitible: 10,
-      resurtir: true,
       disponible: 0
     }
     return this.crud.setRuta(this.ruta).crear<IngredienteInv>(inventario, id, this.franquiciaId).pipe(
@@ -125,7 +128,7 @@ export class InventarioService {
     )
   }
 
-  actualizarInventario(nuevoInventario: IngredienteInv, franquiciaId:string){
+  actualizarInventario(nuevoInventario: IngredienteInv, franquiciaId?:string){
 
     nuevoInventario.resurtir = (nuevoInventario.minResurtir ?? 10) >= (nuevoInventario.disponible ?? 0)
 

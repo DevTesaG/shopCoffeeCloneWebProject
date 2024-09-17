@@ -19,6 +19,7 @@ import { ImprimirComponent } from './features/venta/imprimir/imprimir.component'
 import { InsumosOpcionesComponent } from './features/insumos-opciones/insumos-opciones.component';
 import { BalanceComponent } from './features/ventas/balance/balance.component';
 import { ProduccionComponent } from './features/produccion/produccion.component';
+import { SurtirComponent } from './features/surtir/surtir.component';
 
 
 export const routes: Routes = [
@@ -28,6 +29,8 @@ export const routes: Routes = [
     {path: "admin", component: AdminHomeComponent, children: [
         {path:'', pathMatch: 'full', redirectTo: 'franquicias'},
         {path: "franquicias",component: FranquiciasComponent, canActivate: [adminGuard]},
+        {path: "balances",component: BalanceComponent, canActivate: [adminGuard]},
+        {path: "almacen",component: SurtirComponent, canActivate: [adminGuard]},
         {path: "ingredientes",component: IngredientesComponent, canActivate: [adminGuard]},
         {path: "productos",component: ProductosComponent, canActivate: [adminGuard]},
         {path: "eventos", component:EventosComponent, canActivate: [adminGuard]},
@@ -35,6 +38,7 @@ export const routes: Routes = [
     {path: "franquicias/:id", component: HomeComponent, canActivateChild: [loggedInGuard],  
     children: [
         {path:'', pathMatch:'full',redirectTo: 'ventas'},
+        {path: "surtir",component: SurtirComponent, canActivate: [adminGuard]}, 
         {path: "usuarios",component: UsuariosComponent, canActivate: [isManagerGuard]}, 
         {path: "inventarios", component: InventarioComponent, canActivate: [isManagerGuard]},
         {path: "insumos", component: InsumosComponent, canActivate:[isManagerGuard]},
