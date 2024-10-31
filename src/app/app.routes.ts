@@ -41,7 +41,7 @@ export const routes: Routes = [
         {path: "surtir",component: SurtirComponent, canActivate: [adminGuard]}, 
         {path: "usuarios",component: UsuariosComponent, canActivate: [isManagerGuard]}, 
         {path: "inventarios", component: InventarioComponent, canActivate: [isManagerGuard]},
-        {path: "insumos", component: InsumosComponent, canActivate:[isManagerGuard]},
+        {path: "insumos", component: SurtirComponent, canActivate:[isManagerGuard]},
         {path: "insumosOpciones", component: InsumosOpcionesComponent, canActivate:[isManagerGuard]},
         {path: "balances", component: BalanceComponent, canActivate:[isManagerGuard]},
         {path: "produccion", component: ProduccionComponent, canActivate:[isManagerGuard]},

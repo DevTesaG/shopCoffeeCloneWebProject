@@ -148,10 +148,10 @@
                 
                 <button class="d-inblock btn btn-primary mt-2 me-2" type="button" [disabled]="nuevafranquicia" [routerLink]="['/franquicias',franquicia?.id]">Administrar</button> 
                 
-                <button class="d-inblock btn btn-secondary mt-2" type="button" [disabled]="nuevafranquicia" [routerLink]="['/franquicias',franquicia?.nombre, 'surtir']">Surtir</button> 
+                <button class="d-inblock btn btn-secondary mt-2" type="button" [disabled]="nuevafranquicia" [routerLink]="['/franquicias',franquicia?.id + '_Almacen','surtir']">Surtir</button> 
 
             </app-form>
-        </form>x
+        </form>
         
     }
 

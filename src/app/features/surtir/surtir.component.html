@@ -1,97 +1,163 @@
+<div class="mt-3 container-fluid"></div>
+<h2 class="text-muted">Ordenes Generadas</h2>
+<hr>
 
-<div class="mt-3 container-fluid">
-    <h2 class="text-muted">SURTIDO: {{id | uppercase}}</h2>
-    <hr>
+<div class="position-fixed me-5 mb-5" style="bottom: 5rem; right: 7rem;">
+    <button (click)="crearProducto()" class="z-3 btn btn-lg bg-primary float-end position-absolute float-end rounded-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="3rem" fill="white" class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+        </svg>
+    </button>
+</div>
 
-    <div class="row">
-      <div class="col-5">
+<div class="row">
+  <div  [ngClass]="{'col-5': !((!!order || nuevoProducto || ingrediente)), 'col-3': !!order || nuevoProducto || ingrediente}">
+    @if(ingredientesProdutcto$ | async; as orders){
+        <app-typeahead [data]="orders"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+    }@else if(!error){
+        Cargando ...
+    }@else{
+        <label for="" class="">
+            {{error}} ...
+            <hr>
+        </label>
+    }
+</div>
+  <div [ngClass]="{'col-7': !(!!order || nuevoProducto || ingrediente), 'col-9': !!order || nuevoProducto || ingrediente}">
+    
+@if(ingrediente){
+        <div class="container-fluid" >
+            <div class="overflow-auto" style="height: 30vw;">    
+                <table [formGroup]="form" class="table">
+                    <thead class="sticky-top table-secondary">
+                        <tr>
+                            <th scope="col">Ingredientes Agregables</th>
+                            <th scope="col">Maximo No. Unidades</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="ingredientes">
+                            @for(ing of ingredientes.controls; track ing.value; let i=$index){
+                                <tr [formGroupName]="i">   
+                                    <th scope="row" class="align-middle">
+                                        <span class="align-middle">
+                                            <button (click)="removerIngrediente(true, i)" type="button"  class="btn-close align-middle" aria-label="Close"></button>
+                                            {{ing.get('nombre')?.value}}
+                                        </span>                                            
+                                    </th>
+                                    
+                                    <td>
+                                        <div class="input-group input-group-sm">
+                                                <input 
+                                                [class.is-invalid]="ing?.get('cantidad')?.touched && ing?.get('cantidad')?.invalid"        
+                                                formControlName="cantidad"
+                                                type="number" 
+                                                class="form-control" 
+                                                aria-label="Sizing example input" 
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                placeholder="">
+                                            <span class="input-group-text">{{ing.get('unidades')?.value}}</span>
+                                        </div>
+                                    </td>
+                            </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
 
-        @if(inventarios$ | async; as invts;){
-            <app-typeahead [data]="invts"  key="nombre" (elementoActivado)="inventarioSeleccionado($event)"></app-typeahead>
-        } @else{
-            <p class="text-muted ms-1">Error de Conexion. Intente recargar ...</p> 
-        }
+        </div>     
         
+        <hr class="w-75">
+        <button class="btn btn-secondary ms-2 mt-2" type="button" (click)="adminIngredientes(false)">
+            Administrar Productos
+        </button> 
+}
+
+<form [formGroup]="form">
+    @if((order || nuevoProducto) && !ingrediente){
+
+    <app-form (formValue)="crear($event)" [form]="form" [soloLectura]="cargando">
+
+        
+        <ng-template #inputTpt  let-f="f">
+
+                <app-form-input [control]="f['nombre']">
+                    
+                    <input
+                    formControlName="nombre"      
+                    id="nombre" 
+                    type="text"
+                    aria-label="nombre"
+                    class="form-control"
+                    [class.is-invalid]="f['nombre'].touched && f['nombre'].invalid"
+                    placeholder="Nombre"
+                    
+                    >
+                    <label for="nombre"> Nombre</label>
+                    
+                </app-form-input>
+
+            
+        </ng-template>
+
+        <ng-template #inputTpt  let-f="f">
+        
+            <div class="col">
+                <app-form-input [control]="f['fecha_emision']">
+
+                    <input 
+                    formControlName="fecha_emision"
+                    id="fecha_emision" 
+                    type="date" 
+                    class="form-control"
+                    [class.is-invalid]="f['fecha_emision'].touched && f['fecha_emision'].invalid"
+                    placeholder="fecha_emision"
+                    >
+                    <label for="fecha_emision">Fecha de Emision</label>
+                </app-form-input>
+            </div>
+            <div class="col">
+                <app-form-input [control]="f['estatus']">
+
+                    <input 
+                    formControlName="estatus"
+                    id="estatus" 
+                    type="text" 
+                    class="form-control"
+                    [class.is-invalid]="f['estatus'].touched && f['estatus'].invalid"
+                    placeholder="estatus"
+                    >
+                    <label for="estatus">Estatus</label>
+                </app-form-input>
+            </div>
+          
+        </ng-template>
+
+            <span>{{nuevoProducto  ? 'Crear' : 'Actualizar'}}</span>
+            
+            <!-- <button class="btn btn-danger ms-2 mt-2" type="button" [disabled]="nuevoProducto || order?.estatus =='en_progreso' || entregar" (click)="eliminar()">Recibir</button>  -->
+            <button class="btn btn-danger ms-2 mt-2" type="button" [disabled]="nuevoProducto || (order?.estatus !='espera' && entregar) || (order?.estatus !='en_progreso' && !entregar) " (click)="eliminar()"> {{ entregar ? 'Enviar':'Recibir'}}</button> 
+            
+            <button class="btn btn-secondary ms-2 mt-2" type="button" [disabled]="entregar || (order!=undefined && order.estatus!='espera')" (click)="adminIngredientes(true)">
+                Administrar Ingredientes
+            </button>  
+            
+            
+    </app-form>
+    }
+</form>
+
+@if(message){  
+    <div [ngClass]="alertColor ? 'alert-success': 'alert-danger'" class="alert alert-dismissible d-flex align-items-center fade show" role="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+        <span>
+            {{message}}
+        </span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-      <div class="col-7">
-        
-    @if(inventario?.id){
-        <form [formGroup]="form">
+}
 
-            <app-form (formValue)="crear($event)" [soloLectura]="loadingDisable" [form]="form">           
-                <ng-template #inputTpt  let-f="f">
-                    
-        
 
-                        <app-form-input [control]="f['nombre']">
-                            
-                            <input
-                            formControlName="nombre"      
-                            id="nombre" 
-                            type="text"
-                            aria-label="nombre"
-                            class="form-control"
-                            [class.is-invalid]="f['nombre'].touched && f['nombre'].invalid"
-                            placeholder="Nombre"
-                            
-                            >
-                            <label for="nombre"> Nombre</label>
-                            
-                        </app-form-input>                
-                </ng-template>
-
-                <ng-template #inputTpt  let-f="f">
-                    <div class="col">
-
-                    <app-form-input [control]="f['disponible']">
-
-                        <input 
-                        formControlName="disponible"
-                        id="disponible" 
-                        type="number" 
-                        min="0"
-                        class="form-control"
-                        [class.is-invalid]="f['disponible'].touched && f['disponible'].invalid"
-                        placeholder="disponible"
-                        >
-                        <p spanend class="mb-0 pb-0 input-group-text">{{inventario?.unidadInsumo}}</p>
-                        <label for="disponible">Insumo</label>
-                    </app-form-input>
-                </div>
-                    <div class="col">
-
-                    <app-form-input [control]="f['minPermitible']">
-                        <span class="input-group-text align-baseline">$</span>
-                        <input 
-                        formControlName="minPermitible"
-                        id="minPermitible" 
-                        type="number" 
-                        class="form-control"
-                        [class.is-invalid]="f['minPermitible'].touched && f['minPermitible'].invalid"
-                        placeholder="minPermitible"
-                        >
-                        <label for="minPermitible">Costo</label>
-                    </app-form-input>
-                </div>
-                    
-                </ng-template>
-
-                <span>Actualizar</span>       
-            </app-form>
-        </form>
-    }
-
-    @if(message){  
-        <div class="alert alert-success alert-dismissible d-flex align-items-center fade show" role="alert">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-            </svg>
-            <span>
-                {{message}}
-            </span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-      </div>
   </div>
 </div>

@@ -125,15 +125,17 @@
     </div>
 
     <div class="row">
-      <div  class="col-3">
-
+      <div  [classList]="inicioTurno ? 'col-1' :'col-3'">
+        @if(!inicioTurno){
         <div class="form-check form-switch mb-1">
             <input #combo class="form-check-input" (change)="adminCombos(combo.checked)" type="checkbox" role="switch" id="flexSwitchCheckDefault">
             <label class="form-check-label" for="flexSwitchCheckDefault">Mostrar Combos</label>
         </div>
 
         @if(productos$ | async; as productos;){
-            <app-typeahead [data]="productos"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+           
+                <app-typeahead [data]="productos"  key="nombre" (elementoActivado)="productoSeleccionado($event)"></app-typeahead>
+            
         }@else if(!error){
             Cargando ...
         }@else{
@@ -142,8 +144,9 @@
                 <hr>
             </label>
         }
+    }
     </div>
-      <div class="col-9"> 
+      <div [classList]="inicioTurno ? 'col-11' :'col-9'"> 
         
         @if(advertenciaFecha){
             <div class="mx-3 my-2 alert alert-danger alert-dismissible  align-items-center fade show" role="alert">

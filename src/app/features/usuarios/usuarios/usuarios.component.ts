@@ -88,7 +88,7 @@ export class UsuariosComponent {
       this.usuarios.crearUsuario(usuario).subscribe({
         complete: () => {this.message = "El usuario fue Creado"; this.nuevoUsuario = false},
         error: ()=> {this.cargando = false; this.message = 'Error de conexion. Intente de nuevo'; alert('Error inesperado. intente de nuevo.')}
-      })
+      }) 
     }else{
       Object.assign(this.usuario, usuario)
       this.usuarios.actualizarUsuario(this.usuario).subscribe({

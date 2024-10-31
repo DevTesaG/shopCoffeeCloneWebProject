@@ -37,12 +37,12 @@ export class AuthService {
   private currentUser?:Usuario = undefined;
   private userChanged:User = {} as User;
   private intentoInicioSesion = false
-  sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !!v)); 
-  // sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !(!!v))); 
+  // sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !!v)); 
+  sesionIniciada$:Observable<any> = this.currentUser$.pipe(map(v => !(!!v))); 
   uid$:Observable<any> = this.currentUser$.pipe(map(v => v?.id)); 
   franquicia$:Observable<any> = this.currentUser$.pipe(map(v => v?.franquiciaId )); 
-  // esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => !(!!(v) && v.rol == 'ADMIN'))); 
-  esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'ADMIN'))); 
+  esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => !(!!(v) && v.rol == 'ADMIN'))); 
+  // esAdmin$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'ADMIN'))); 
   esCajero$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'CAJERO'))); 
   esGerente$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'GERENTE'))); 
   esBarista$:Observable<any> = this.currentUser$.pipe(map(v => (!!(v) && v.rol == 'BARISTA'))); 
